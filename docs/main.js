@@ -115,19 +115,19 @@ async function loadFromDrive() {
     if (!accessToken) return alert("先にログインしてください");
 
     try {
-        // 1. ファイル名で検索し、IDを取得する
+        // 1. ファイル名で検索
         const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id,name)`, {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
         const searchData = await searchRes.json();
 
-        // 検索結果の配列にデータがあるか確認
+        // 2. 検索結果があるか確認し、0番目の要素からIDを取り出す
         if (searchData.files && searchData.files.length > 0) {
-            // ★重要: searchData.files のようにインデックスを指定します [1], [2]
+            // ★ここを .id に修正します
             const fileId = searchData.files.id; 
-            console.log("ファイルを発見しました。ID:", fileId);
+            console.log("読み込むファイルID:", fileId);
 
-            // 2. ファイルの内容をダウンロード (alt=media を指定) [3]
+            // 3. 正しいIDを使ってダウンロードを実行
             const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
@@ -136,17 +136,20 @@ async function loadFromDrive() {
 
             const csvText = await fileRes.text();
             
-            // 3. CSVをパースしてリストを更新
-            wordList = parseCSV(csvText);
-            saveToLocal(); // ローカルストレージも同期
-            updateTable(); // 画面を更新
-            alert("Google Driveから読み込みました！");
+            // 4. データを反映
+            const loadedData = parseCSV(csvText);
+            if (loadedData && loadedData.length > 0) {
+                wordList = loadedData;
+                saveToLocal(); // ローカルにも保存
+                updateTable(); // 画面更新
+                alert("Google Driveから同期しました！");
+            }
         } else {
-            alert("Google Drive上に 'wordlist.csv' が見つかりませんでした。先に「保存」を行ってください。");
+            alert("Drive上に 'wordlist.csv' が見つかりませんでした。");
         }
     } catch (error) {
-        console.error("読み込みエラー:", error);
-        alert("エラーが発生しました。コンソールを確認してください。");
+        console.error("読み込みエラーの詳細:", error);
+        alert("読み込みに失敗しました。コンソールを確認してください。");
     }
 }
 
