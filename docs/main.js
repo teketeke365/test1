@@ -112,14 +112,13 @@ function parseCSV(csvText) {
 //     }
 // }
 
-// --- データの保存 (既存のファイルがあれば更新、なければ新規作成) ---
 async function saveToDrive() {
     if (!accessToken) return alert("先にログインしてください");
 
     try {
         const csvContent = convertToCSV(wordList);
         
-        // 1. まず同じ名前のファイルがあるか検索
+        // 1. ファイル名で検索（idフィールドを確実に取得）
         const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id)`, {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
@@ -128,28 +127,19 @@ async function saveToDrive() {
         let url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media';
         let method = 'POST';
 
-        // 2. もし既存のファイルが見つかった場合、そのIDを使って「更新(PATCH)」モードにする
+        // 2. 既存ファイルの判定
         if (searchData.files && searchData.files.length > 0) {
-            // ★ここが重要：番目のファイルのIDを使います
-            const existingFileId = searchData.files.id;
-            url = `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`;
-            method = 'PATCH';
-        } else {
-            // 新規作成の場合は、まず「名前」を登録する
-            const metaRes = await fetch('https://www.googleapis.com/drive/v3/files', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: 'wordlist.csv', mimeType: 'text/csv' })
-            });
-            const metaData = await metaRes.json();
-            url = `https://www.googleapis.com/upload/drive/v3/files/${metaData.id}?uploadType=media`;
-            method = 'PATCH';
+            // ★ここが最重要ポイント：必ず  を指定して最初の1件のIDを取ります
+            const existingFileId = searchData.files.id; 
+            
+            if (existingFileId) {
+                console.log("既存ファイルへの上書きを開始。ID:", existingFileId);
+                url = `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`;
+                method = 'PATCH';
+            }
         }
 
-        // 3. データの書き込み（中身だけを送信）
+        // 3. 送信処理（新規作成 POST または 上書き PATCH）
         const res = await fetch(url, {
             method: method,
             headers: {
@@ -162,15 +152,20 @@ async function saveToDrive() {
         if (res.ok) {
             alert("Google Driveに同期・保存しました！");
         } else {
+            const errorDetail = await res.json();
+            console.error("APIエラー詳細:", errorDetail);
             throw new Error("保存に失敗しました");
         }
     } catch (error) {
         console.error("保存エラー:", error);
-        alert("保存中にエラーが発生しました。");
+        alert("保存に失敗しました。コンソールに詳細が表示されています。");
     }
 }
 
-// --- データの読み込み (必ず配列の0番目を指定) ---
+
+
+
+/// --- データの読み込み (必ず配列の0番目を指定) ---
 async function loadFromDrive() {
     if (!accessToken) return alert("先にログインしてください");
 
