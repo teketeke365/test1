@@ -118,28 +118,31 @@ async function saveToDrive() {
     try {
         const csvContent = convertToCSV(wordList);
         
-        // 1. ファイル名で検索（idフィールドを確実に取得）
+        // 1. 同名ファイルの検索 (idをリクエストに含める)
         const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id)`, {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
         const searchData = await searchRes.json();
 
+        // 【デバッグ用】検索結果をコンソールに表示して確認
+        console.log("Googleからの検索応答:", searchData);
+
         let url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media';
         let method = 'POST';
 
-        // 2. 既存ファイルの判定
+        // 2. 既存ファイルの特定 (配列の0番目を確実に指定)
         if (searchData.files && searchData.files.length > 0) {
-            // ★ここが最重要ポイント：必ず  を指定して最初の1件のIDを取ります
-            const existingFileId = searchData.files.id; 
+            // ★ここが最重要：  を使って配列の最初の要素のidを取得します
+            const fileId = searchData.files.id; 
             
-            if (existingFileId) {
-                console.log("既存ファイルへの上書きを開始。ID:", existingFileId);
-                url = `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`;
+            if (fileId) {
+                console.log("既存ファイル(ID:" + fileId + ")を上書きします");
+                url = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`;
                 method = 'PATCH';
             }
         }
 
-        // 3. 送信処理（新規作成 POST または 上書き PATCH）
+        // 3. 送信処理
         const res = await fetch(url, {
             method: method,
             headers: {
@@ -152,17 +155,15 @@ async function saveToDrive() {
         if (res.ok) {
             alert("Google Driveに同期・保存しました！");
         } else {
-            const errorDetail = await res.json();
-            console.error("APIエラー詳細:", errorDetail);
+            const errorText = await res.text();
+            console.error("保存失敗の理由:", errorText);
             throw new Error("保存に失敗しました");
         }
     } catch (error) {
         console.error("保存エラー:", error);
-        alert("保存に失敗しました。コンソールに詳細が表示されています。");
+        alert("保存エラー: " + error.message);
     }
 }
-
-
 
 
 /// --- データの読み込み (必ず配列の0番目を指定) ---
