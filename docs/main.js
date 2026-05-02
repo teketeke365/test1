@@ -94,24 +94,61 @@ async function saveToDrive() {
 }
 
 // Drive読み込み (ソース [10, 11] のGETリクエスト)
+// async function loadFromDrive() {
+//     const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id)`, {
+//         headers: { 'Authorization': `Bearer ${accessToken}` }
+//     });
+//     const searchData = await searchRes.json();
+//     if (searchData.files.length > 0) {
+//         const fileId = searchData.files.id;
+//         const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+//             headers: { 'Authorization': `Bearer ${accessToken}` }
+//         });
+//         const csvText = await fileRes.text();
+//         wordList = parseCSV(csvText);
+//         saveToLocal();
+//         updateTable();
+//         alert("同期が完了しました！");
+//     }
+// }
 async function loadFromDrive() {
-    const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id)`, {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-    });
-    const searchData = await searchRes.json();
-    if (searchData.files.length > 0) {
-        const fileId = searchData.files.id;
-        const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+    if (!accessToken) return alert("先にログインしてください");
+
+    try {
+        // 1. ファイル名で検索し、IDを取得する
+        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id,name)`, {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
-        const csvText = await fileRes.text();
-        wordList = parseCSV(csvText);
-        saveToLocal();
-        updateTable();
-        alert("同期が完了しました！");
+        const searchData = await searchRes.json();
+
+        // 検索結果の配列にデータがあるか確認
+        if (searchData.files && searchData.files.length > 0) {
+            // ★重要: searchData.files のようにインデックスを指定します [1], [2]
+            const fileId = searchData.files.id; 
+            console.log("ファイルを発見しました。ID:", fileId);
+
+            // 2. ファイルの内容をダウンロード (alt=media を指定) [3]
+            const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+
+            if (!fileRes.ok) throw new Error("ファイルのダウンロードに失敗しました");
+
+            const csvText = await fileRes.text();
+            
+            // 3. CSVをパースしてリストを更新
+            wordList = parseCSV(csvText);
+            saveToLocal(); // ローカルストレージも同期
+            updateTable(); // 画面を更新
+            alert("Google Driveから読み込みました！");
+        } else {
+            alert("Google Drive上に 'wordlist.csv' が見つかりませんでした。先に「保存」を行ってください。");
+        }
+    } catch (error) {
+        console.error("読み込みエラー:", error);
+        alert("エラーが発生しました。コンソールを確認してください。");
     }
 }
-
 
 // --- 3. 単語帳本体のロジック (ソース [12-15] に基づく) ---
 
