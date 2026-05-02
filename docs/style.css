@@ -22,3 +22,34 @@ tr:nth-child(even) { background-color: #f9f9f9; }
 #fail-options { margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; }
 #fail-options button { display: block; width: 100%; margin: 5px 0; padding: 8px; cursor: pointer; }
 .nav-btns { display: flex; justify-content: space-between; align-items: center; }
+
+/* --- 既存のスタイルに以下を追加 --- */
+
+.sync-panel {
+    background: #e9ecef;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+}
+
+.sync-panel button {
+    padding: 5px 12px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.sync-panel button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#sync-status {
+    color: #666;
+    font-weight: bold;
+}

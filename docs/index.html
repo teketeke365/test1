@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英単語練習帳!!<!DOCTYPE html>
-    <html lang="en">
-    <head>
+    <!-- <title>英単語練習帳!!<!DOCTYPE html>       
+    <html lang="ja"> -->
+    <title>英単語練習帳</title>
+    <!-- <head> -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
+        <!-- <title>Document</title> -->
+        <!-- ★追加: Google API ライブラリの読み込み [1, 3] -->
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <script src="https://apis.google.com/js/api.js" async defer></script>
+        <link rel="stylesheet" href="style.css">
+    <!-- </head> -->
+    <!-- <body>
         
-    </body>
-    </html></title>
-    <link rel="stylesheet" href="style.css">
+    </body> -->
+    <!-- </html></title> -->
+    <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 <body>
+    <!-- ★追加: Google Drive同期用コントロールパネル -->
+    <div id="drive-controls" class="sync-panel">
+        <button id="authBtn" onclick="handleAuthClick()">Googleログイン</button>
+        <button id="saveDriveBtn" onclick="saveToDrive()" disabled>Driveへ保存(CSV)</button>
+        <button id="loadDriveBtn" onclick="loadFromDrive()" disabled>Driveから読み込み</button>
+        <span id="sync-status">未ログイン</span>
+    </div>
     <nav>
         <button onclick="switchMode('wordbook')">単語帳モード</button>
         <button onclick="switchMode('test')">テストモード</button>
