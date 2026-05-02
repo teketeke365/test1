@@ -115,44 +115,40 @@ async function loadFromDrive() {
     if (!accessToken) return alert("先にログインしてください");
 
     try {
-        // 1. ファイル名で検索
+        // 1. ファイルを検索
         const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id,name)`, {
             headers: { 'Authorization': `Bearer ${accessToken}` }
         });
         const searchData = await searchRes.json();
 
-        // 2. 検索結果があるか確認し、0番目の要素からIDを取り出す
+        // 2. 検索結果があるか確認し、「0番目」の要素からIDを取り出す
         if (searchData.files && searchData.files.length > 0) {
-            // ★ここを .id に修正します
+            // ★ここが修正ポイントです： を入れます
             const fileId = searchData.files.id; 
-            console.log("読み込むファイルID:", fileId);
+            console.log("取得したファイルID:", fileId);
 
-            // 3. 正しいIDを使ってダウンロードを実行
+            // 3. 正しいファイルIDを使用してダウンロード
             const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
 
-            if (!fileRes.ok) throw new Error("ファイルのダウンロードに失敗しました");
+            if (!fileRes.ok) throw new Error("ダウンロードに失敗しました");
 
             const csvText = await fileRes.text();
             
             // 4. データを反映
-            const loadedData = parseCSV(csvText);
-            if (loadedData && loadedData.length > 0) {
-                wordList = loadedData;
-                saveToLocal(); // ローカルにも保存
-                updateTable(); // 画面更新
-                alert("Google Driveから同期しました！");
-            }
+            wordList = parseCSV(csvText);
+            saveToLocal(); 
+            updateTable(); 
+            alert("Google Driveから同期しました！");
         } else {
             alert("Drive上に 'wordlist.csv' が見つかりませんでした。");
         }
     } catch (error) {
-        console.error("読み込みエラーの詳細:", error);
-        alert("読み込みに失敗しました。コンソールを確認してください。");
+        console.error("詳細エラー:", error);
+        alert("読み込みエラーが発生しました。");
     }
 }
-
 // --- 3. 単語帳本体のロジック (ソース [12-15] に基づく) ---
 
 const saveToLocal = () => localStorage.setItem(storageKey, JSON.stringify(wordList));
