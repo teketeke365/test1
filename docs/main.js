@@ -77,21 +77,21 @@ function parseCSV(csvText) {
     });
 }
 
-// Drive保存 (ソース [8, 9] のmultipartアップロード)
-async function saveToDrive() {
-    const csvContent = convertToCSV(wordList);
-    const metadata = { name: 'wordlist.csv', mimeType: 'text/csv' };
-    const form = new FormData();
-    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-    form.append('file', new Blob([csvContent], { type: 'text/csv' }));
+// // Drive保存 (ソース [8, 9] のmultipartアップロード)
+// async function saveToDrive() {
+//     const csvContent = convertToCSV(wordList);
+//     const metadata = { name: 'wordlist.csv', mimeType: 'text/csv' };
+//     const form = new FormData();
+//     form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+//     form.append('file', new Blob([csvContent], { type: 'text/csv' }));
 
-    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${accessToken}` },
-        body: form
-    });
-    if (res.ok) alert("DriveにCSVを保存しました！");
-}
+//     const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+//         method: 'POST',
+//         headers: { 'Authorization': `Bearer ${accessToken}` },
+//         body: form
+//     });
+//     if (res.ok) alert("DriveにCSVを保存しました！");
+// }
 
 // Drive読み込み (ソース [10, 11] のGETリクエスト)
 // async function loadFromDrive() {
@@ -111,6 +111,66 @@ async function saveToDrive() {
 //         alert("同期が完了しました！");
 //     }
 // }
+
+// --- データの保存 (既存のファイルがあれば更新、なければ新規作成) ---
+async function saveToDrive() {
+    if (!accessToken) return alert("先にログインしてください");
+
+    try {
+        const csvContent = convertToCSV(wordList);
+        
+        // 1. まず同じ名前のファイルがあるか検索
+        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='wordlist.csv'&fields=files(id)`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        const searchData = await searchRes.json();
+
+        let url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media';
+        let method = 'POST';
+
+        // 2. もし既存のファイルが見つかった場合、そのIDを使って「更新(PATCH)」モードにする
+        if (searchData.files && searchData.files.length > 0) {
+            // ★ここが重要：番目のファイルのIDを使います
+            const existingFileId = searchData.files.id;
+            url = `https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`;
+            method = 'PATCH';
+        } else {
+            // 新規作成の場合は、まず「名前」を登録する
+            const metaRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: 'wordlist.csv', mimeType: 'text/csv' })
+            });
+            const metaData = await metaRes.json();
+            url = `https://www.googleapis.com/upload/drive/v3/files/${metaData.id}?uploadType=media`;
+            method = 'PATCH';
+        }
+
+        // 3. データの書き込み（中身だけを送信）
+        const res = await fetch(url, {
+            method: method,
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'text/csv'
+            },
+            body: csvContent
+        });
+
+        if (res.ok) {
+            alert("Google Driveに同期・保存しました！");
+        } else {
+            throw new Error("保存に失敗しました");
+        }
+    } catch (error) {
+        console.error("保存エラー:", error);
+        alert("保存中にエラーが発生しました。");
+    }
+}
+
+// --- データの読み込み (必ず配列の0番目を指定) ---
 async function loadFromDrive() {
     if (!accessToken) return alert("先にログインしてください");
 
@@ -121,34 +181,39 @@ async function loadFromDrive() {
         });
         const searchData = await searchRes.json();
 
-        // 2. 検索結果があるか確認し、「0番目」の要素からIDを取り出す
+        // 2. 検索結果を確認
         if (searchData.files && searchData.files.length > 0) {
-            // ★ここが修正ポイントです： を入れます
+            // ★修正ポイント：searchData.files.id と記述します
             const fileId = searchData.files.id; 
-            console.log("取得したファイルID:", fileId);
+            console.log("読み込むファイルID:", fileId);
 
-            // 3. 正しいファイルIDを使用してダウンロード
+            // 3. ファイルの内容をダウンロード
             const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
 
-            if (!fileRes.ok) throw new Error("ダウンロードに失敗しました");
+            if (!fileRes.ok) throw new Error("ダウンロード失敗");
 
             const csvText = await fileRes.text();
             
-            // 4. データを反映
-            wordList = parseCSV(csvText);
-            saveToLocal(); 
-            updateTable(); 
-            alert("Google Driveから同期しました！");
+            // 4. CSVをパースして反映
+            const loadedData = parseCSV(csvText);
+            if (loadedData) {
+                wordList = loadedData;
+                save(); // LocalStorageへ反映 [1]
+                updateTable(); // 画面を更新 [2]
+                alert("Google Driveから読み込みました！");
+            }
         } else {
             alert("Drive上に 'wordlist.csv' が見つかりませんでした。");
         }
     } catch (error) {
-        console.error("詳細エラー:", error);
-        alert("読み込みエラーが発生しました。");
+        console.error("読み込みエラー:", error);
+        alert("エラーが発生しました。コンソールを確認してください。");
     }
 }
+
+
 // --- 3. 単語帳本体のロジック (ソース [12-15] に基づく) ---
 
 const saveToLocal = () => localStorage.setItem(storageKey, JSON.stringify(wordList));
