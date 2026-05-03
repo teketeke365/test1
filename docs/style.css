@@ -59,12 +59,30 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    table-layout: fixed; /* ← これだけ残す */
+}
+
+/* 共通セル */
+th, td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+
+    overflow: hidden;         /* ← 追加 */
+    text-overflow: ellipsis;  /* ← 追加 */
+}
+テーブル全体
+table2 {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
     table-layout: fixed; /* ← 超重要（幅制御） */
     min-width: 600px; /* ← これが超重要 */
 }
 
 /* 共通セル */
-th, td {
+th2, td2 {
     border: 1px solid #ddd;
     padding: 6px;              /* 少し縮小 */
     text-align: center;
@@ -72,7 +90,7 @@ th, td {
 }
 
 /* 英語・日本語を広く使う */
-.col-word {
+/* .col-word {
     width: 35%;
     text-align: left;
 }
@@ -80,19 +98,35 @@ th, td {
 .col-meaning {
     width: 35%;
     text-align: left;
+} */
+.col-word {
+    width: 30%;
+    word-break: break-word;
 }
 
-/* チェック系は極小 */
+.col-meaning {
+    width: 30%;
+    word-break: break-word;
+}
+
+チェック系は極小
 .col-check {
     width: 40px;               /* 固定幅で小さく */
     padding: 2px;
 }
-
-/* 削除ボタン */
-.col-delete {
-    width: 60px;
+.check-col, .col-check {
+    width: 40px;
+    text-align: center;
 }
 
+/* 削除ボタン */
+/* .col-delete {
+    width: 60px;
+} */
+.delete-col, .col-delete {
+    width: 45px;
+    text-align: center;
+}
 /* グループ見出し */
 .col-group {
     font-size: 11px;
