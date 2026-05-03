@@ -53,3 +53,65 @@ tr:nth-child(even) { background-color: #f9f9f9; }
     color: #666;
     font-weight: bold;
 }
+
+/* テーブル全体 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed; /* ← 超重要（幅制御） */
+}
+
+/* 共通セル */
+th, td {
+    border: 1px solid #ddd;
+    padding: 6px;              /* 少し縮小 */
+    text-align: center;
+    font-size: 12px;           /* 小さめに */
+}
+
+/* 英語・日本語を広く使う */
+.col-word {
+    width: 35%;
+    text-align: left;
+}
+
+.col-meaning {
+    width: 35%;
+    text-align: left;
+}
+
+/* チェック系は極小 */
+.col-check {
+    width: 40px;               /* 固定幅で小さく */
+    padding: 2px;
+}
+
+/* 削除ボタン */
+.col-delete {
+    width: 60px;
+}
+
+/* グループ見出し */
+.col-group {
+    font-size: 11px;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+    th, td {
+        font-size: 10px;
+        padding: 4px;
+    }
+
+    .col-check {
+        width: 30px;
+    }
+
+    .col-delete {
+        width: 50px;
+    }
+}
+input[type="checkbox"] {
+    transform: scale(0.8);
+}
