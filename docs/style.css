@@ -155,9 +155,13 @@ input[type="checkbox"] {
     overflow-x: auto;
 }
 
-.delete-btn {
+/* .delete-btn {
     padding: 2px 6px;
     font-size: 12px;
     cursor: pointer;
+} */
+.delete-btn {
+    padding: 0;        /* ← ここを0に */
+    font-size: 10px;   /* ← 少し小さく */
+    line-height: 1;    /* ← 高さを潰す */
 }
-
