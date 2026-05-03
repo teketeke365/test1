@@ -60,6 +60,7 @@ table {
     border-collapse: collapse;
     margin-top: 10px;
     table-layout: fixed; /* ← 超重要（幅制御） */
+    min-width: 600px; /* ← これが超重要 */
 }
 
 /* 共通セル */
