@@ -84,9 +84,9 @@ table2 {
 /* 共通セル */
 th2, td2 {
     border: 1px solid #ddd;
-    padding: 6px;              /* 少し縮小 */
+    padding: 2px;              /* 少し縮小 */
     text-align: center;
-    font-size: 12px;           /* 小さめに */
+    font-size: 11px;           /* 小さめに */
 }
 
 /* 英語・日本語を広く使う */
@@ -111,11 +111,11 @@ th2, td2 {
 
 チェック系は極小
 .col-check {
-    width: 40px;               /* 固定幅で小さく */
+    width: 20px;               /* 固定幅で小さく */
     padding: 2px;
 }
 .check-col, .col-check {
-    width: 40px;
+    width: 20px;
     text-align: center;
 }
 
@@ -124,13 +124,13 @@ th2, td2 {
     width: 60px;
 } */
 .delete-col, .col-delete {
-    width: 45px;
+    width: 20px;
     text-align: center;
 }
 /* グループ見出し */
 .col-group {
     font-size: 11px;
-     width: 90px; /* 40px × 3列 */
+     width: 60px; /* 40px × 3列 */
 }
 
 /* スマホ対応 */
@@ -161,7 +161,3 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-.delete-col {
-    width: 50px;
-    text-align: center;
-}
