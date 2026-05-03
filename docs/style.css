@@ -130,6 +130,7 @@ th2, td2 {
 /* グループ見出し */
 .col-group {
     font-size: 11px;
+     width: 90px; /* 40px × 3列 */
 }
 
 /* スマホ対応 */
