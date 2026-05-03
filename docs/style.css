@@ -156,6 +156,10 @@ th2, td2 {
     .mode {
         border-radius: 0;  /* ← 角丸なくす（好み） */
     }
+
+    .col-delete,.delete-col {
+        display: none;
+    }
 }
 input[type="checkbox"] {
     transform: scale(0.8);
