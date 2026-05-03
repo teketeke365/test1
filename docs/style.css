@@ -136,16 +136,16 @@ th2, td2 {
 /* スマホ対応 */
 @media (max-width: 600px) {
     th, td {
-        font-size: 10px;
-        padding: 4px;
+        font-size: 9px;
+        padding: 2px;
     }
 
     .col-check {
-        width: 30px;
+        width: 20px;
     }
 
     .col-delete {
-        width: 50px;
+        width: 20px ;
     }
 }
 input[type="checkbox"] {
