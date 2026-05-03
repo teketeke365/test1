@@ -147,6 +147,15 @@ th2, td2 {
     .col-delete {
         width: 20px ;
     }
+
+    body {
+        padding: 0;        /* ← 外側余白を消す */
+        max-width: none;   /* ← 制限解除 */
+    }
+
+    .mode {
+        border-radius: 0;  /* ← 角丸なくす（好み） */
+    }
 }
 input[type="checkbox"] {
     transform: scale(0.8);
