@@ -314,13 +314,25 @@ function updateTable() {
     if (!tbody) return;
     tbody.innerHTML = '';
     wordList.forEach((item, index) => {
-        const row = `<tr>
-            <td>${item.word}</td><td>${item.meaning}</td>
-            <td><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
-            <td><input type="checkbox" ${item.c2 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c2')"></td>
-            <td><input type="checkbox" ${item.c3 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c3')"></td>
-            <td><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
-            <td><button onclick="deleteWord(${index})">削除</button></td>
+        // const row = `<tr>
+        //     <td>${item.word}</td><td>${item.meaning}</td>
+        //     <td><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
+        //     <td><input type="checkbox" ${item.c2 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c2')"></td>
+        //     <td><input type="checkbox" ${item.c3 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c3')"></td>
+        //     <td><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
+        //     // <td><button onclick="deleteWord(${index})">削除</button></td>
+        //     <td><button class="delete-btn" onclick="deleteWord(${index})">×</button></td>
+        // </tr>`;
+            const row = `<tr>
+            <td>${item.word}</td>
+            <td>${item.meaning}</td>
+            <td class="check-col"><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
+            <td class="check-col"><input type="checkbox" ${item.c2 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c2')"></td>
+            <td class="check-col"><input type="checkbox" ${item.c3 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c3')"></td>
+            <td class="check-col"><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
+            <td class="delete-col">
+                <button class="delete-btn" onclick="deleteWord(${index})">×</button>
+            </td>
         </tr>`;
         tbody.insertAdjacentHTML('beforeend', row);
     });
