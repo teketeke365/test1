@@ -29,7 +29,15 @@ document.getElementById('addBtn').addEventListener('click', () => {
     if (!word || !meaning) return alert("両方入力してください");
 
     // 初期データ構造
-    wordList.push({ word, meaning, c1: false, c2: false, c3: false, passed: false });
+    // wordList.push({ word, meaning, c1: false, c2: false, c3: false, passed: false });
+    wordList.push(
+        {
+        word,
+        meaning,
+        en: { c1:false, c2:false, c3:false, passed:false }, // 英語を隠すモード用
+        ja: { c1:false, c2:false, c3:false, passed:false }  // 日本語を隠すモード用
+        }
+    );
     save();
     updateTable();
     document.getElementById('wordInput').value = '';
@@ -60,22 +68,67 @@ function handleAuthClick() {
 }
 
 // データ変換: JSON配列 ↔ CSV文字列 (ソース [8] のアップロード手法を応用)
+// function convertToCSV(data) {
+//     if (data.length === 0) return "";
+//     const headers = "word,meaning,c1,c2,c3,passed";
+//     const rows = data.map(o => `${o.word},${o.meaning},${o.c1},${o.c2},${o.c3},${o.passed}`);
+//     return [headers, ...rows].join("\n");
+// }
+
 function convertToCSV(data) {
     if (data.length === 0) return "";
-    const headers = "word,meaning,c1,c2,c3,passed";
-    const rows = data.map(o => `${o.word},${o.meaning},${o.c1},${o.c2},${o.c3},${o.passed}`);
+
+    // ★ヘッダー変更
+    const headers = "word,meaning,en_c1,en_c2,en_c3,en_passed,ja_c1,ja_c2,ja_c3,ja_passed";
+
+    // ★中身も en / ja に対応
+    const rows = data.map(o =>
+        `${o.word},${o.meaning},` +
+        `${o.en.c1},${o.en.c2},${o.en.c3},${o.en.passed},` +
+        `${o.ja.c1},${o.ja.c2},${o.ja.c3},${o.ja.passed}`
+    );
+
     return [headers, ...rows].join("\n");
 }
-
+// function parseCSV(csvText) {
+//     const lines = csvText.trim().split("\n");
+//     if (lines.length <= 1) return [];
+//     return lines.slice(1).map(line => {
+//         const [word, meaning, c1, c2, c3, passed] = line.split(",");
+//         return { 
+//             word, meaning, 
+//             c1: c1 === "true", c2: c2 === "true", c3: c3 === "true", 
+//             passed: passed === "true" 
+//         };
+//     });
+// }
 function parseCSV(csvText) {
     const lines = csvText.trim().split("\n");
     if (lines.length <= 1) return [];
+
     return lines.slice(1).map(line => {
-        const [word, meaning, c1, c2, c3, passed] = line.split(",");
-        return { 
-            word, meaning, 
-            c1: c1 === "true", c2: c2 === "true", c3: c3 === "true", 
-            passed: passed === "true" 
+        const [
+            word, meaning,
+            en_c1, en_c2, en_c3, en_passed,
+            ja_c1, ja_c2, ja_c3, ja_passed
+        ] = line.split(",");
+
+        return {
+            word,
+            meaning,
+            // ★ここが最重要（新構造）
+            en: {
+                c1: en_c1 === "true",
+                c2: en_c2 === "true",
+                c3: en_c3 === "true",
+                passed: en_passed === "true"
+            },
+            ja: {
+                c1: ja_c1 === "true",
+                c2: ja_c2 === "true",
+                c3: ja_c3 === "true",
+                passed: ja_passed === "true"
+            }
         };
     });
 }
@@ -326,18 +379,46 @@ function updateTable() {
         //     // <td><button onclick="deleteWord(${index})">削除</button></td>
         //     <td><button class="delete-btn" onclick="deleteWord(${index})">×</button></td>
         // </tr>`;
+            // const row = `<tr>
+            //  <td class="${hideWord ? 'hidden-text' : ''}">
+            //    ${hideWord ? '' : item.word}
+            // </td>
+            // <td class="${hideMeaning ? 'hidden-text' : ''}">
+            //      ${hideMeaning ? '' : item.meaning}
+            // </td>
+  
+            // <td class="check-col"><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
+            // <td class="check-col"><input type="checkbox" ${item.c2 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c2')"></td>
+            // <td class="check-col"><input type="checkbox" ${item.c3 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c3')"></td>
+            // <td class="check-col"><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
+            // ★修正：チェック表示をモード対応に変更
+
             const row = `<tr>
-             <td class="${hideWord ? 'hidden-text' : ''}">
-               ${hideWord ? '' : item.word}
+            <td class="${hideWord ? 'hidden-text' : ''}">
+            ${hideWord ? '' : item.word}
             </td>
             <td class="${hideMeaning ? 'hidden-text' : ''}">
-                 ${hideMeaning ? '' : item.meaning}
+            ${hideMeaning ? '' : item.meaning}
             </td>
-  
-            <td class="check-col"><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
-            <td class="check-col"><input type="checkbox" ${item.c2 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c2')"></td>
-            <td class="check-col"><input type="checkbox" ${item.c3 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c3')"></td>
-            <td class="check-col"><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
+
+            <td class="check-col">
+            ${renderCheck(getCheck(item, 'c1'), index, 'c1')}  <!-- ★ -->
+            </td>
+            <td class="check-col">
+            ${renderCheck(getCheck(item, 'c2'), index, 'c2')}  <!-- ★ -->
+            </td>
+            <td class="check-col">
+            ${renderCheck(getCheck(item, 'c3'), index, 'c3')}  <!-- ★ -->
+            </td>
+            <td class="check-col">
+            ${renderCheck(getCheck(item, 'passed'), index, 'passed')}  <!-- ★ -->
+            </td>
+
+            <td class="delete-col">
+                <button class="delete-btn" onclick="deleteWord(${index})">×</button>
+            </td>
+            </tr>`;
+            
             <td class="delete-col">
                 <button class="delete-btn" onclick="deleteWord(${index})">×</button>
             </td>
@@ -378,15 +459,15 @@ window.onload = () => {
 //     });
 // }
 
-function toggleCheck(index, key) {
-    wordList[index][key] = !wordList[index][key];
-    // 合格がついたら他のチェックは外す
-    if (key === 'passed' && wordList[index].passed) {
-        wordList[index].c1 = wordList[index].c2 = wordList[index].c3 = false;
-    }
-    save();
-    updateTable();
-}
+// function toggleCheck(index, key) {
+//     wordList[index][key] = !wordList[index][key];
+//     // 合格がついたら他のチェックは外す
+//     if (key === 'passed' && wordList[index].passed) {
+//         wordList[index].c1 = wordList[index].c2 = wordList[index].c3 = false;
+//     }
+//     save();
+//     updateTable();
+// }
 
 function deleteWord(index) {
     if (confirm("削除しますか？")) {
@@ -421,31 +502,58 @@ document.getElementById('showAnswerBtn').addEventListener('click', () => {
 });
 
 // テスト判定 [8]
+// function handleTestResult(isCorrect) {
+//     if (isCorrect) {
+//         // 合格処理
+//         const item = wordList[currentIndex];
+//         item.passed = true;
+//         item.c1 = item.c2 = item.c3 = false;
+//         save();
+//         nextWord();
+//     }
+// }
 function handleTestResult(isCorrect) {
+    const item = wordList[currentIndex];
+    const isEn = document.querySelector('input[name="testType"]:checked').value === 'en';
+
+    const target = isEn ? item.en : item.ja; // ★モード別
+
     if (isCorrect) {
-        // 合格処理
-        const item = wordList[currentIndex];
-        item.passed = true;
-        item.c1 = item.c2 = item.c3 = false;
-        save();
-        nextWord();
+        target.passed = true;
+        target.c1 = target.c2 = target.c3 = false;
     }
+
+    save();
+    nextWord();
 }
 
 function showFailOptions() {
     document.getElementById('fail-options').style.display = 'block';
 }
 
+// function setCheckAndNext(level) {
+//     const item = wordList[currentIndex];
+//     item.passed = false;
+//     item.c1 = (level === 1);
+//     item.c2 = (level === 2);
+//     item.c3 = (level === 3);
+//     save();
+//     nextWord();
+// }
 function setCheckAndNext(level) {
     const item = wordList[currentIndex];
-    item.passed = false;
-    item.c1 = (level === 1);
-    item.c2 = (level === 2);
-    item.c3 = (level === 3);
+    const isEn = document.querySelector('input[name="testType"]:checked').value === 'en';
+
+    const target = isEn ? item.en : item.ja; // ★
+
+    target.passed = false;
+    target.c1 = (level === 1);
+    target.c2 = (level === 2);
+    target.c3 = (level === 3);
+
     save();
     nextWord();
 }
-
 function nextWord() {
     currentIndex = (currentIndex + 1) % wordList.length;
     showQuestion();
@@ -464,6 +572,82 @@ function toggleHideWord() {
 function toggleHideMeaning() {
     hideMeaning = !hideMeaning;
     updateTable();
+}
+
+function getMode() {
+    if (hideWord && !hideMeaning) return 'en';
+    if (!hideWord && hideMeaning) return 'ja';
+    return 'both'; // 初期表示モード
+}
+
+function getCheck(item, key) {
+    const mode = getMode();
+
+    if (mode === 'en') return item.en[key];
+    if (mode === 'ja') return item.ja[key];
+
+    // bothモード
+    const en = item.en[key];
+    const ja = item.ja[key];
+
+    if (en && ja) return 'both';
+    if (en || ja) return 'partial';
+    return false;
+}
+
+function renderCheck(val, index, key) {
+    if (val === 'both') {
+        return `<input type="checkbox" checked onclick="toggleCheck(${index}, '${key}')">`;
+    }
+    if (val === 'partial') {
+        return `<input type="checkbox" class="partial" onclick="toggleCheck(${index}, '${key}')">`;
+    }
+    return `<input type="checkbox" onclick="toggleCheck(${index}, '${key}')">`;
+}
+
+function toggleCheck(index, key) {
+    const item = wordList[index];
+    const mode = getMode();
+
+    if (mode === 'en') {
+        item.en[key] = !item.en[key];
+        if (key === 'passed' && item.en.passed) {
+            item.en.c1 = item.en.c2 = item.en.c3 = false;
+        }
+    } else if (mode === 'ja') {
+        item.ja[key] = !item.ja[key];
+        if (key === 'passed' && item.ja.passed) {
+            item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
+        }
+    } else {
+        // bothモード → 両方に反映
+        const newVal = !(item.en[key] && item.ja[key]);
+
+        item.en[key] = newVal;
+        item.ja[key] = newVal;
+
+        if (key === 'passed' && newVal) {
+            item.en.c1 = item.en.c2 = item.en.c3 = false;
+            item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
+        }
+    }
+
+    save();
+    updateTable();
+}
+function handleTestResult(isCorrect) {
+    const item = wordList[currentIndex];
+    const isEn = document.querySelector('input[name="testType"]:checked').value === 'en';
+
+    const target = isEn ? item.en : item.ja;
+
+    if (isCorrect) {
+        target.passed = true;
+        target.c1 = target.c2 = target.c3 = false;
+    }
+
+    save();
+    nextWord();
 }
 // 初期表示
 updateTable();

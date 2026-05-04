@@ -182,3 +182,6 @@ input[type="checkbox"] {
 .hidden-text {
     background-color: #eee;
 }
+.partial {
+    accent-color: #ccc; /* 薄いチェック */
+}
