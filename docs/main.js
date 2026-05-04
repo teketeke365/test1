@@ -333,8 +333,7 @@ function updateTable() {
             <td class="${hideMeaning ? 'hidden-text' : ''}">
                  ${hideMeaning ? '' : item.meaning}
             </td>
-            <td>${item.word}</td>
-            <td>${item.meaning}</td>
+  
             <td class="check-col"><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
             <td class="check-col"><input type="checkbox" ${item.c2 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c2')"></td>
             <td class="check-col"><input type="checkbox" ${item.c3 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c3')"></td>
