@@ -1,4 +1,4 @@
-// revision2 logic4
+// revision2 logic5
 let hideWord = false;
 let hideMeaning = false;
 
@@ -561,13 +561,31 @@ function prevWord() {
     showQuestion();
 }
 
+// function toggleHideWord() {
+//     hideWord = !hideWord;
+//     updateTable();
+// }
 function toggleHideWord() {
-    hideWord = !hideWord;
+    if (!hideWord) {        // ★OFF→ONにする時
+        hideWord = true;
+        hideMeaning = false; // ★相手を必ずOFF
+    } else {                // ★ON→OFF
+        hideWord = false;
+    }
     updateTable();
 }
 
+// function toggleHideMeaning() {
+//     hideMeaning = !hideMeaning;
+//     updateTable();
+// }
 function toggleHideMeaning() {
-    hideMeaning = !hideMeaning;
+    if (!hideMeaning) {     // ★OFF→ONにする時
+        hideMeaning = true;
+        hideWord = false;  // ★相手を必ずOFF
+    } else {               // ★ON→OFF
+        hideMeaning = false;
+    }
     updateTable();
 }
 
