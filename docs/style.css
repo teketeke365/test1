@@ -185,3 +185,6 @@ input[type="checkbox"] {
 .partial {
     accent-color: #ccc; /* 薄いチェック */
 }
+input.partial {
+    opacity: 0.4;
+}

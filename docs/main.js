@@ -1,3 +1,4 @@
+// revision2 logic3
 let hideWord = false;
 let hideMeaning = false;
 
@@ -597,6 +598,9 @@ function renderCheck(val, index, key) {
     }
     if (val === 'partial') {
         return `<input type="checkbox" class="partial" onclick="toggleCheck(${index}, '${key}')">`;
+    }
+    if (val === true) {  // ★これを追加
+        return `<input type="checkbox" checked onclick="toggleCheck(${index}, '${key}')">`;
     }
     return `<input type="checkbox" onclick="toggleCheck(${index}, '${key}')">`;
 }
