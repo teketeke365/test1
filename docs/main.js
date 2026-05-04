@@ -1,4 +1,4 @@
-// revision2 logic5
+// revision2 logic6
 let hideWord = false;
 let hideMeaning = false;
 
@@ -629,14 +629,14 @@ function toggleCheck(index, key) {
 
     if (mode === 'en') {
         item.en[key] = !item.en[key];
-        if (key === 'passed' && item.en.passed) {
-            item.en.c1 = item.en.c2 = item.en.c3 = false;
-        }
+        // if (key === 'passed' && item.en.passed) {
+        //     item.en.c1 = item.en.c2 = item.en.c3 = false;
+        // }
     } else if (mode === 'ja') {
         item.ja[key] = !item.ja[key];
-        if (key === 'passed' && item.ja.passed) {
-            item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
-        }
+        // if (key === 'passed' && item.ja.passed) {
+        //     item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
+        // }
     } else {
         // bothモード → 両方に反映
         const newVal = !(item.en[key] && item.ja[key]);
@@ -644,10 +644,10 @@ function toggleCheck(index, key) {
         item.en[key] = newVal;
         item.ja[key] = newVal;
 
-        if (key === 'passed' && newVal) {
-            item.en.c1 = item.en.c2 = item.en.c3 = false;
-            item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
-        }
+        // if (key === 'passed' && newVal) {
+        //     item.en.c1 = item.en.c2 = item.en.c3 = false;
+        //     item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
+        // }
     }
 
     save();
@@ -661,7 +661,7 @@ function handleTestResult(isCorrect) {
 
     if (isCorrect) {
         target.passed = true;
-        target.c1 = target.c2 = target.c3 = false;
+        // target.c1 = target.c2 = target.c3 = false;
     }
 
     save();
