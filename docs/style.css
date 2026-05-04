@@ -187,4 +187,5 @@ input[type="checkbox"] {
 }
 input.partial {
     opacity: 0.4;
+    transform: scale(0.9);
 }
