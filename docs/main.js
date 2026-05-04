@@ -395,34 +395,30 @@ function updateTable() {
 
             const row = `<tr>
             <td class="${hideWord ? 'hidden-text' : ''}">
-            ${hideWord ? '' : item.word}
+                ${hideWord ? '' : item.word}
             </td>
             <td class="${hideMeaning ? 'hidden-text' : ''}">
-            ${hideMeaning ? '' : item.meaning}
+                ${hideMeaning ? '' : item.meaning}
             </td>
 
             <td class="check-col">
-            ${renderCheck(getCheck(item, 'c1'), index, 'c1')}  <!-- ★ -->
+                ${renderCheck(getCheck(item, 'c1'), index, 'c1')}
             </td>
             <td class="check-col">
-            ${renderCheck(getCheck(item, 'c2'), index, 'c2')}  <!-- ★ -->
+                ${renderCheck(getCheck(item, 'c2'), index, 'c2')}
             </td>
             <td class="check-col">
-            ${renderCheck(getCheck(item, 'c3'), index, 'c3')}  <!-- ★ -->
+                ${renderCheck(getCheck(item, 'c3'), index, 'c3')}
             </td>
             <td class="check-col">
-            ${renderCheck(getCheck(item, 'passed'), index, 'passed')}  <!-- ★ -->
+                ${renderCheck(getCheck(item, 'passed'), index, 'passed')}
             </td>
 
             <td class="delete-col">
                 <button class="delete-btn" onclick="deleteWord(${index})">×</button>
             </td>
             </tr>`;
-            
-            <td class="delete-col">
-                <button class="delete-btn" onclick="deleteWord(${index})">×</button>
-            </td>
-        </tr>`;
+
         tbody.insertAdjacentHTML('beforeend', row);
     });
 }
