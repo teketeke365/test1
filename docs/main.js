@@ -1,3 +1,6 @@
+let hideWord = false;
+let hideMeaning = false;
+
 const storageKey = 'myEnglishWords';
 let wordList = JSON.parse(localStorage.getItem(storageKey)) || []; // 保存データ読み込み [4]
 let currentIndex = 0;
@@ -324,6 +327,12 @@ function updateTable() {
         //     <td><button class="delete-btn" onclick="deleteWord(${index})">×</button></td>
         // </tr>`;
             const row = `<tr>
+             <td class="${hideWord ? 'hidden-text' : ''}">
+               ${hideWord ? '' : item.word}
+            </td>
+            <td class="${hideMeaning ? 'hidden-text' : ''}">
+                 ${hideMeaning ? '' : item.meaning}
+            </td>
             <td>${item.word}</td>
             <td>${item.meaning}</td>
             <td class="check-col"><input type="checkbox" ${item.c1 ? 'checked' : ''} onclick="toggleCheck(${index}, 'c1')"></td>
@@ -448,7 +457,15 @@ function prevWord() {
     showQuestion();
 }
 
+function toggleHideWord() {
+    hideWord = !hideWord;
+    updateTable();
+}
 
+function toggleHideMeaning() {
+    hideMeaning = !hideMeaning;
+    updateTable();
+}
 // 初期表示
 updateTable();
 
