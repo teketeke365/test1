@@ -1,4 +1,8 @@
-// revision2 logic6
+// revision2 cutomization1
+
+let lastCheckedIndex = -1; // ★追加
+let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
+
 let hideWord = false;
 let hideMeaning = false;
 
@@ -394,12 +398,20 @@ function updateTable() {
             // <td class="check-col"><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
             // ★修正：チェック表示をモード対応に変更
 
+            // <td class="${hideWord ? 'hidden-text' : ''}">
+            //     ${hideWord ? '' : item.word}
+            // </td>
+            // <td class="${hideMeaning ? 'hidden-text' : ''}">
+            //     ${hideMeaning ? '' : item.meaning}
+            // </td>
+
             const row = `<tr>
-            <td class="${hideWord ? 'hidden-text' : ''}">
-                ${hideWord ? '' : item.word}
+            <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
+            ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
             </td>
-            <td class="${hideMeaning ? 'hidden-text' : ''}">
-                ${hideMeaning ? '' : item.meaning}
+
+            <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
+            ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
             </td>
 
             <td class="check-col">
@@ -543,6 +555,10 @@ function setCheckAndNext(level) {
 
     const target = isEn ? item.en : item.ja; // ★
 
+        // ★追加
+    lastCheckedIndex = Math.max(lastCheckedIndex, currentIndex);
+    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+
     target.passed = false;
     target.c1 = (level === 1);
     target.c2 = (level === 2);
@@ -627,6 +643,10 @@ function toggleCheck(index, key) {
     const item = wordList[index];
     const mode = getMode();
 
+        // ★追加：最後に触った位置を記録
+    lastCheckedIndex = Math.max(lastCheckedIndex, index);
+    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+
     if (mode === 'en') {
         item.en[key] = !item.en[key];
         // if (key === 'passed' && item.en.passed) {
@@ -666,6 +686,17 @@ function handleTestResult(isCorrect) {
 
     save();
     nextWord();
+}
+
+function resetProgress() {
+    lastCheckedIndex = -1;                  // ★進捗リセット
+    updateTable();                          // ★即反映
+}
+
+function resetProgress() {
+    lastCheckedIndex = -1;
+    localStorage.removeItem('lastCheckedIndex'); // ★保持も削除
+    updateTable();
 }
 // 初期表示
 updateTable();
