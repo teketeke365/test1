@@ -565,7 +565,7 @@ function prevWord() {
 //     hideWord = !hideWord;
 //     updateTable();
 // }
-function toggleHideWord() {
+function toggleHideWord() {//英語を隠す
     if (!hideWord) {        // ★OFF→ONにする時
         hideWord = true;
         hideMeaning = false; // ★相手を必ずOFF
@@ -579,7 +579,7 @@ function toggleHideWord() {
 //     hideMeaning = !hideMeaning;
 //     updateTable();
 // }
-function toggleHideMeaning() {
+function toggleHideMeaning() {//日本語を隠す
     if (!hideMeaning) {     // ★OFF→ONにする時
         hideMeaning = true;
         hideWord = false;  // ★相手を必ずOFF
@@ -590,8 +590,8 @@ function toggleHideMeaning() {
 }
 
 function getMode() {
-    if (hideWord && !hideMeaning) return 'en';
-    if (!hideWord && hideMeaning) return 'ja';
+    if (hideWord && !hideMeaning) return 'ja';
+    if (!hideWord && hideMeaning) return 'en';
     return 'both'; // 初期表示モード
 }
 
