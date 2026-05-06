@@ -1,6 +1,6 @@
-// revision2 cutomization3c
+// revision2 cutomization3d
 
-let lastCheckedIndex = -1; // ★追加
+// let lastCheckedIndex = -1; // ★追加
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
 
 
