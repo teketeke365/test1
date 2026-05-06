@@ -1,4 +1,4 @@
-// revision2 cutomization3
+// revision2 cutomization3a
 
 let lastCheckedIndex = -1; // ★追加
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
@@ -405,11 +405,6 @@ function updateTable() {
             // <td class="${hideMeaning ? 'hidden-text' : ''}">
             //     ${hideMeaning ? '' : item.meaning}
             // </td>
-
-                // ★ここ追加（表示制御）
-
-            
-            const row = `<tr>
             // <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
             // ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
             // </td>
@@ -417,6 +412,11 @@ function updateTable() {
             // <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
             // ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
             // </td>
+                // ★ここ追加（表示制御）
+
+            
+            const row = `<tr>
+
             <td class="${hideWord && isHidden ? 'hidden-text' : ''}">
             ${hideWord && isHidden ? '' : item.word}
             </td>
