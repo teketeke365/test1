@@ -1,4 +1,4 @@
-// revision2 cutomization1
+// revision2 cutomization2
 
 let lastCheckedIndex = -1; // ★追加
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
@@ -405,6 +405,9 @@ function updateTable() {
             //     ${hideMeaning ? '' : item.meaning}
             // </td>
 
+                // ★ここ追加（表示制御）
+            if (index > lastCheckedIndex) return;
+            
             const row = `<tr>
             <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
             ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
@@ -643,9 +646,7 @@ function toggleCheck(index, key) {
     const item = wordList[index];
     const mode = getMode();
 
-        // ★追加：最後に触った位置を記録
-    lastCheckedIndex = Math.max(lastCheckedIndex, index);
-    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+
 
     if (mode === 'en') {
         item.en[key] = !item.en[key];
@@ -669,6 +670,10 @@ function toggleCheck(index, key) {
         //     item.ja.c1 = item.ja.c2 = item.ja.c3 = false;
         // }
     }
+
+            // ★追加：最後に触った位置を記録
+    lastCheckedIndex = Math.max(lastCheckedIndex, index);
+    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
 
     save();
     updateTable();
