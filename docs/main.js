@@ -1,8 +1,8 @@
-// revision2 cutomization3a
+// revision2 cutomization3b
 
 let lastCheckedIndex = -1; // ★追加
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
-const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
+
 
 let hideWord = false;
 let hideMeaning = false;
@@ -414,6 +414,8 @@ function updateTable() {
             // </td>
                 // ★ここ追加（表示制御）
 
+                // ★ここが正解
+            const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
             
             const row = `<tr>
 
