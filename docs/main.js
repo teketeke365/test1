@@ -1,7 +1,8 @@
-// revision2 cutomization2
+// revision2 cutomization3
 
 let lastCheckedIndex = -1; // ★追加
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
+const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
 
 let hideWord = false;
 let hideMeaning = false;
@@ -406,15 +407,22 @@ function updateTable() {
             // </td>
 
                 // ★ここ追加（表示制御）
-            if (index > lastCheckedIndex) return;
+
             
             const row = `<tr>
-            <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
-            ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
+            // <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
+            // ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
+            // </td>
+
+            // <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
+            // ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
+            // </td>
+            <td class="${hideWord && isHidden ? 'hidden-text' : ''}">
+            ${hideWord && isHidden ? '' : item.word}
             </td>
 
-            <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
-            ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
+            <td class="${hideMeaning && isHidden ? 'hidden-text' : ''}">
+            ${hideMeaning && isHidden ? '' : item.meaning}
             </td>
 
             <td class="check-col">
