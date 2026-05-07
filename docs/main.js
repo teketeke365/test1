@@ -1,6 +1,6 @@
-// revision3 cutomization5
+// revision3 scroll1
 
-// let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
+let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
 let lastCheckedIndexEn = Number(localStorage.getItem('lastCheckedIndexEn')) || -1; // ★英語→日本語
 let lastCheckedIndexJa = Number(localStorage.getItem('lastCheckedIndexJa')) || -1; // ★日本語→英語
 
@@ -567,7 +567,7 @@ function setCheckAndNext(level) {
     const target = isEn ? item.en : item.ja; // ★
 
         // ★追加
-    // lastCheckedIndex = Math.max(lastCheckedIndex, currentIndex);
+    lastCheckedIndex = Math.max(lastCheckedIndex, currentIndex);
     if (mode === 'en') {
         lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
     }
@@ -581,7 +581,7 @@ function setCheckAndNext(level) {
         lastCheckedIndexJa = Math.max(lastCheckedIndexJa, index);
     }
     
-    // localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
     localStorage.setItem('lastCheckedIndexEn', lastCheckedIndexEn); // ★ここ
     localStorage.setItem('lastCheckedIndexJa', lastCheckedIndexJa); // ★ここ
 
@@ -695,7 +695,7 @@ function toggleCheck(index, key) {
     }
 
             // ★追加：最後に触った位置を記録
-    // lastCheckedIndex = Math.max(lastCheckedIndex, index);
+    lastCheckedIndex = Math.max(lastCheckedIndex, index);
     if (mode === 'en') {
         lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
     }
@@ -708,7 +708,7 @@ function toggleCheck(index, key) {
         lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
         lastCheckedIndexJa = Math.max(lastCheckedIndexJa, index);
     }
-    // localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
     localStorage.setItem('lastCheckedIndexEn', lastCheckedIndexEn); // ★ここ
     localStorage.setItem('lastCheckedIndexJa', lastCheckedIndexJa); // ★ここ
 
@@ -731,7 +731,7 @@ function handleTestResult(isCorrect) {
 }
 
 function resetProgress() {
-    // lastCheckedIndex = -1;
+    lastCheckedIndex = -1;
     lastCheckedIndexEn = -1;
     lastCheckedIndexJa = -1;
     // ★進捗リセット
@@ -739,7 +739,7 @@ function resetProgress() {
 }
 
 function resetProgress() {
-    // lastCheckedIndex = -1;
+    lastCheckedIndex = -1;
     lastCheckedIndexEn = -1;
     lastCheckedIndexJa = -1;
     // localStorage.removeItem('lastCheckedIndex'); // ★保持も削除

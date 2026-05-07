@@ -189,3 +189,9 @@ input.partial {
     opacity: 0.4;
     transform: scale(0.9);
 }
+
+.table-wrapper {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
