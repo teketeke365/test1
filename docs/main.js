@@ -1,4 +1,5 @@
-// revision3 scroll1
+// revision3 scroll2
+let tableScrollTop = Number(localStorage.getItem('tableScrollTop')) || 0;
 
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
 let lastCheckedIndexEn = Number(localStorage.getItem('lastCheckedIndexEn')) || -1; // ★英語→日本語
@@ -445,6 +446,12 @@ function updateTable() {
 
         tbody.insertAdjacentHTML('beforeend', row);
     });
+
+    const wrapper = document.getElementById('tableWrapper');
+
+    if (wrapper) {
+        wrapper.scrollTop = tableScrollTop;
+    }
 }
 
 // モード切り替え
@@ -458,6 +465,15 @@ function switchMode(mode) {
 window.onload = () => {
     initDriveAuth(); // Google認証の準備
     updateTable();   // 初回一覧表示
+
+    const wrapper = document.getElementById('tableWrapper');
+
+    if (wrapper) {
+        wrapper.addEventListener('scroll', () => {
+            tableScrollTop = wrapper.scrollTop;
+            localStorage.setItem('tableScrollTop', tableScrollTop);
+        });
+    }
 };
 
 
