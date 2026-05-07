@@ -1,4 +1,4 @@
-// revision3 cutomization4
+// revision3 cutomization5
 
 // let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
 let lastCheckedIndexEn = Number(localStorage.getItem('lastCheckedIndexEn')) || -1; // ★英語→日本語
