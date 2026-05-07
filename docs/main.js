@@ -1,4 +1,4 @@
-// revision2 cutomization3d
+// revision2 cutomization4
 
 // let lastCheckedIndex = -1; // ★追加
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
@@ -399,43 +399,25 @@ function updateTable() {
             // <td class="check-col"><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
             // ★修正：チェック表示をモード対応に変更
 
-            // <td class="${hideWord ? 'hidden-text' : ''}">
-            //     ${hideWord ? '' : item.word}
-            // </td>
-            // <td class="${hideMeaning ? 'hidden-text' : ''}">
-            //     ${hideMeaning ? '' : item.meaning}
-            // </td>
-            // <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
+             // <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
             // ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
             // </td>
 
             // <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
             // ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
             // </td>
-                // ★ここ追加（表示制御）
+            const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
 
-
-            // <td class="${hideWord && isHidden ? 'hidden-text' : ''}">
-            // ${hideWord && isHidden ? '' : item.word}
-            // </td>
-
-            // <td class="${hideMeaning && isHidden ? 'hidden-text' : ''}">
-            // ${hideMeaning && isHidden ? '' : item.meaning}
-            // </td>
-
-
-                // ★ここが正解
-            // const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
-            
             const row = `<tr>
-         
-            <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
-            ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
+
+            <td class="${hideWord && isHidden ? 'hidden-text' : ''}">
+            ${hideWord && isHidden ? '' : item.word}
             </td>
 
-            <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
-            ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
+            <td class="${hideMeaning && isHidden ? 'hidden-text' : ''}">
+            ${hideMeaning && isHidden ? '' : item.meaning}
             </td>
+
 
             <td class="check-col">
                 ${renderCheck(getCheck(item, 'c1'), index, 'c1')}
