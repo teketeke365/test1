@@ -1,8 +1,8 @@
-// revision2 cutomization4
+// revision3 cutomization4
 
-// let lastCheckedIndex = -1; // ★追加
-let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
-
+// let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
+let lastCheckedIndexEn = Number(localStorage.getItem('lastCheckedIndexEn')) || -1; // ★英語→日本語
+let lastCheckedIndexJa = Number(localStorage.getItem('lastCheckedIndexJa')) || -1; // ★日本語→英語
 
 let hideWord = false;
 let hideMeaning = false;
@@ -399,14 +399,20 @@ function updateTable() {
             // <td class="check-col"><input type="checkbox" ${item.passed ? 'checked' : ''} onclick="toggleCheck(${index}, 'passed')"></td>
             // ★修正：チェック表示をモード対応に変更
 
-             // <td class="${hideWord && index > lastCheckedIndex ? 'hidden-text' : ''}">
-            // ${(hideWord && index > lastCheckedIndex) ? '' : item.word}
-            // </td>
 
-            // <td class="${hideMeaning && index > lastCheckedIndex ? 'hidden-text' : ''}">
-            // ${(hideMeaning && index > lastCheckedIndex) ? '' : item.meaning}
-            // </td>
-            const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
+            // const isHidden = (hideWord || hideMeaning) && index > lastCheckedIndex;
+
+            let limitIndex = Infinity;
+
+            if (hideWord) {
+                limitIndex = lastCheckedIndexJa;
+            }
+
+            if (hideMeaning) {
+                limitIndex = lastCheckedIndexEn;
+            }
+
+            const isHidden = (hideWord || hideMeaning) && index > limitIndex;
 
             const row = `<tr>
 
@@ -561,8 +567,23 @@ function setCheckAndNext(level) {
     const target = isEn ? item.en : item.ja; // ★
 
         // ★追加
-    lastCheckedIndex = Math.max(lastCheckedIndex, currentIndex);
-    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+    // lastCheckedIndex = Math.max(lastCheckedIndex, currentIndex);
+    if (mode === 'en') {
+        lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
+    }
+
+    if (mode === 'ja') {
+        lastCheckedIndexJa = Math.max(lastCheckedIndexJa, index);
+    }
+
+    if (mode === 'both') {
+        lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
+        lastCheckedIndexJa = Math.max(lastCheckedIndexJa, index);
+    }
+    
+    // localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+    localStorage.setItem('lastCheckedIndexEn', lastCheckedIndexEn); // ★ここ
+    localStorage.setItem('lastCheckedIndexJa', lastCheckedIndexJa); // ★ここ
 
     target.passed = false;
     target.c1 = (level === 1);
@@ -674,8 +695,22 @@ function toggleCheck(index, key) {
     }
 
             // ★追加：最後に触った位置を記録
-    lastCheckedIndex = Math.max(lastCheckedIndex, index);
-    localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+    // lastCheckedIndex = Math.max(lastCheckedIndex, index);
+    if (mode === 'en') {
+        lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
+    }
+
+    if (mode === 'ja') {
+        lastCheckedIndexJa = Math.max(lastCheckedIndexJa, index);
+    }
+
+    if (mode === 'both') {
+        lastCheckedIndexEn = Math.max(lastCheckedIndexEn, index);
+        lastCheckedIndexJa = Math.max(lastCheckedIndexJa, index);
+    }
+    // localStorage.setItem('lastCheckedIndex', lastCheckedIndex); // ★ここ
+    localStorage.setItem('lastCheckedIndexEn', lastCheckedIndexEn); // ★ここ
+    localStorage.setItem('lastCheckedIndexJa', lastCheckedIndexJa); // ★ここ
 
     save();
     updateTable();
@@ -696,13 +731,20 @@ function handleTestResult(isCorrect) {
 }
 
 function resetProgress() {
-    lastCheckedIndex = -1;                  // ★進捗リセット
+    // lastCheckedIndex = -1;
+    lastCheckedIndexEn = -1;
+    lastCheckedIndexJa = -1;
+    // ★進捗リセット
     updateTable();                          // ★即反映
 }
 
 function resetProgress() {
-    lastCheckedIndex = -1;
-    localStorage.removeItem('lastCheckedIndex'); // ★保持も削除
+    // lastCheckedIndex = -1;
+    lastCheckedIndexEn = -1;
+    lastCheckedIndexJa = -1;
+    // localStorage.removeItem('lastCheckedIndex'); // ★保持も削除
+    localStorage.removeItem('lastCheckedIndexEn'); // ★保持も削除
+    localStorage.removeItem('lastCheckedIndexJa'); // ★保持も削除
     updateTable();
 }
 // 初期表示
