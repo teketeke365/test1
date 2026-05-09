@@ -195,3 +195,36 @@ input.partial {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.dialog-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 320px;
+}
+
+.dialog-box input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}

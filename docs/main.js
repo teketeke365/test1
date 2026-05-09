@@ -1,4 +1,7 @@
-// revision3 scroll2
+// revision3 dialog1
+
+let currentEditIndex = -1;
+
 let tableScrollTop = Number(localStorage.getItem('tableScrollTop')) || 0;
 
 let lastCheckedIndex = Number(localStorage.getItem('lastCheckedIndex')) || -1; // ★ここ
@@ -440,7 +443,8 @@ function updateTable() {
             </td>
 
             <td class="delete-col">
-                <button class="delete-btn" onclick="deleteWord(${index})">×</button>
+                // <button class="delete-btn" onclick="deleteWord(${index})">×</button>
+                <button class="delete-btn" onclick="openEditDialog(${index})">詳細</button>
             </td>
             </tr>`;
 
@@ -762,6 +766,48 @@ function resetProgress() {
     localStorage.removeItem('lastCheckedIndexEn'); // ★保持も削除
     localStorage.removeItem('lastCheckedIndexJa'); // ★保持も削除
     updateTable();
+}
+
+function openEditDialog(index) {
+    currentEditIndex = index;
+
+    document.getElementById('editWord').value =
+        wordList[index].word;
+
+    document.getElementById('editMeaning').value =
+        wordList[index].meaning;
+
+    document.getElementById('editDialog').style.display = 'flex';
+}
+
+function closeDialog() {
+    document.getElementById('editDialog').style.display = 'none';
+}
+
+function saveEdit() {
+    if (currentEditIndex < 0) return;
+
+    wordList[currentEditIndex].word =
+        document.getElementById('editWord').value.trim();
+
+    wordList[currentEditIndex].meaning =
+        document.getElementById('editMeaning').value.trim();
+
+    save();
+    updateTable();
+    closeDialog();
+}
+
+function deleteCurrentWord() {
+    if (currentEditIndex < 0) return;
+
+    if (!confirm("削除しますか？")) return;
+
+    wordList.splice(currentEditIndex, 1);
+
+    save();
+    updateTable();
+    closeDialog();
 }
 // 初期表示
 updateTable();

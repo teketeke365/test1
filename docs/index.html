@@ -71,7 +71,8 @@
                     <th colspan="3" class="col-group">不明</th>
                     <th rowspan="2" class="col-check">合格</th>
                     <!-- <th rowspan="2" class="col-delete">削除</th> -->
-                    <th rowspan="2" class="col-delete delete-col">削除</th>
+                    <!-- <th rowspan="2" class="col-delete delete-col">削除</th> -->
+                    <th rowspan="2" class="col-delete delete-col">詳細</th>
                 </tr>
                 <tr>
                     <th class="col-check">1</th>
@@ -121,6 +122,24 @@
             <button onclick="prevWord()">前へ</button>
             <span id="test-progress">0 / 0</span>
             <button onclick="nextWord()">次へ</button>
+        </div>
+    </div>
+
+    <div id="editDialog" class="dialog-overlay" style="display:none;">
+        <div class="dialog-box">
+            <h3>単語編集</h3>
+
+            <label>英語</label>
+            <input type="text" id="editWord">
+
+            <label>日本語</label>
+            <input type="text" id="editMeaning">
+
+            <div class="dialog-buttons">
+                <button onclick="saveEdit()">修正</button>
+                <button onclick="deleteCurrentWord()">削除</button>
+                <button onclick="closeDialog()">閉じる</button>
+            </div>
         </div>
     </div>
 
